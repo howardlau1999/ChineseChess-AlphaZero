@@ -203,11 +203,8 @@ class SelfPlayWorker:
             data = [history[0]]
             state = history[0]
             for i in range(turns):
-                state, no_eat = senv.new_step(state, history[2 * i + 1])
-                if no_eat:
-                    data.append([history[2 * i + 1], value, "None"])
-                else:
-                    data.append([history[2 * i + 1], value, no_eat])
+                state, eaten = senv.get_eaten(state, history[2 * i + 1])
+                data.append([history[2 * i + 1], value, eaten])
                 value = -value
             self.save_play_data(idx, data)
 

@@ -26,14 +26,14 @@ class EvaluateConfig:
 class PlayDataConfig:
     def __init__(self):
         self.sl_nb_game_in_file = 250
-        self.nb_game_in_file = 5
+        self.nb_game_in_file = 1
         self.max_file_num = 300
         self.nb_game_save_record = 1
 
 
 class PlayConfig:
     def __init__(self):
-        self.max_processes = 10
+        self.max_processes = 12
         self.search_threads = 40
         self.vram_frac = 1.0
         self.simulation_num_per_move = 800

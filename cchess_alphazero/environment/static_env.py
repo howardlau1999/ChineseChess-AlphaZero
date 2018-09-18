@@ -91,11 +91,23 @@ def new_step(state, action):
     if board[int(action[1])][int(action[0])] == '.':
         raise ValueError(f"No chessman in {action}, state = {state}")
     if board[int(action[3])][int(action[2])] != '.':
-        no_eat = action[3] + action[2] + board[int(action[3])][int(action[2])]
+        no_eat = False
     board[int(action[3])][int(action[2])] = board[int(action[1])][int(action[0])]
     board[int(action[1])][int(action[0])] = '.'
     state = board_to_state(board)
     return fliped_state(state), no_eat
+
+def get_eaten(state, action):
+    eaten = None
+    board = state_to_board(state)
+    if board[int(action[1])][int(action[0])] == '.':
+        raise ValueError(f"No chessman in {action}, state = {state}")
+    if board[int(action[3])][int(action[2])] != '.':
+        eaten = action[3] + action[2] + board[int(action[3])][int(action[2])]
+    board[int(action[3])][int(action[2])] = board[int(action[1])][int(action[0])]
+    board[int(action[1])][int(action[0])] = '.'
+    state = board_to_state(board)
+    return fliped_state(state), eaten
 
 def evaluate(state):
     piece_vals = {'R': 14, 'K': 7, 'E': 3, 'M': 2, 'S':1, 'C': 5, 'P': 1} # for RED account
