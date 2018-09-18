@@ -7,7 +7,7 @@ import concurrent.futures.thread
 import numpy as np
 import cchess_alphazero.environment.static_env as senv
 from cchess_alphazero.config import Config
-from cchess_alphazero.environment.lookup_tables import Winner, ActionLabelsRed, flip_move
+from cchess_alphazero.environment.lookup_tables import Winner, ActionLabelsRed, flip_move, EventLabelsRed
 from time import time, sleep
 import gc 
 import sys
@@ -39,6 +39,8 @@ class CChessPlayer:
         self.play_config = play_config or self.config.play
         self.labels_n = len(ActionLabelsRed)
         self.labels = ActionLabelsRed
+        self.events_n = len(EventLabelsRed)
+        self.events = EventLabelsRed
         self.move_lookup = {move: i for move, i in zip(self.labels, range(self.labels_n))}
         self.pipe = pipes                   # pipes that used to communicate with CChessModelAPI thread
         self.node_lock = defaultdict(Lock)  # key: state key, value: Lock of that state
@@ -339,7 +341,6 @@ class CChessPlayer:
 
     def update_tree(self, p, v, history):
         state = history.pop()
-        z = v
 
         if p is not None:
             with self.node_lock[state]:

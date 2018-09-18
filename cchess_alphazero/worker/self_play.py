@@ -162,9 +162,9 @@ class SelfPlayWorker:
                     free_move = defaultdict(int)
                     for i in range(len(history) - 1):
                         if history[i] == state:
-                            if senv.will_check_or_catch(state, history[i+1]):
+                            if senv.will_check_or_catch(state, history[i + 1]):
                                 no_act.append(history[i + 1])
-                            elif not senv.be_catched(state, history[i+1]):
+                            elif not senv.be_catched(state, history[i + 1]):
                                 increase_temp = True
                                 free_move[state] += 1
                                 if free_move[state] >= 3:
@@ -201,9 +201,13 @@ class SelfPlayWorker:
 
         if store:
             data = [history[0]]
+            state = history[0]
             for i in range(turns):
-                k = i * 2
-                data.append([history[k + 1], value])
+                state, no_eat = senv.new_step(state, history[2 * i + 1])
+                if no_eat:
+                    data.append([history[2 * i + 1], value, "None"])
+                else:
+                    data.append([history[2 * i + 1], value, no_eat])
                 value = -value
             self.save_play_data(idx, data)
 

@@ -24,6 +24,8 @@ Idx_2_Chessman = {
     6: King
 }
 
+Fen = ['p', 'P', 'c', 'C', 'r', 'R', 'k', 'K', 'e', 'E', 'm', 'M', 's', 'S']
+
 Fen_2_Idx = {
     'p': 0,
     'P': 0,
@@ -47,6 +49,13 @@ class Color(Enum):
 
 Winner = Enum("Winner", "red black draw")
 
+def flip_event(x):
+    new = ''
+    new = ''.join([new, str(8 - int(x[0]))])
+    new = ''.join([new, str(9 - int(x[1]))])
+    new = ''.join([new, x[2].swapcase()])
+    return new
+
 def flip_move(x):
     new = ''
     new = ''.join([new, str(8 - int(x[0]))])
@@ -57,6 +66,9 @@ def flip_move(x):
 
 def flip_action_labels(labels):
     return [flip_move(x) for x in labels]
+
+def flip_event_labels(labels):
+    return [flip_event(x) for x in labels]
 
 
 def create_action_labels():
@@ -131,8 +143,25 @@ def create_action_labels():
 
     return labels_array
 
+def create_event_labels():
+    labels_array = [] # [col_src, row_src, eaten_kind]
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] # row
+    letters = ['0', '1', '2', '3', '4', '5', '6', '7', '8'] # col
+    for n1 in range(10):
+        for l1 in range(9):
+            for k1 in range(7):
+                event = letters[l1] + numbers[n1] + Fen[k1 * 2]
+                labels_array.append(event)
+    return labels_array
+
 ActionLabelsRed = create_action_labels()
 ActionLabelsBlack = flip_action_labels(ActionLabelsRed)
+
+EventLabelsRed = create_event_labels()
+EventLabelsBlack = flip_event_labels(EventLabelsRed)
+
+EventLabelsRed.append("None")
+EventLabelsBlack.append("None")
 
 Unflipped_index = [ActionLabelsRed.index(x) for x in ActionLabelsBlack]
 

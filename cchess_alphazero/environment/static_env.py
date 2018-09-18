@@ -91,7 +91,7 @@ def new_step(state, action):
     if board[int(action[1])][int(action[0])] == '.':
         raise ValueError(f"No chessman in {action}, state = {state}")
     if board[int(action[3])][int(action[2])] != '.':
-        no_eat = False
+        no_eat = action[3] + action[2] + board[int(action[3])][int(action[2])]
     board[int(action[3])][int(action[2])] = board[int(action[1])][int(action[0])]
     board[int(action[1])][int(action[0])] = '.'
     state = board_to_state(board)

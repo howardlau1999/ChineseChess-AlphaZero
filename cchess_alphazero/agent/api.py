@@ -61,11 +61,11 @@ class CChessModelAPI:
                 continue
             data = np.asarray(data, dtype=np.float32)
             with self.agent_model.graph.as_default():
-                policy_ary, value_ary = self.agent_model.model.predict_on_batch(data)
+                policy_ary, value_ary, event_ary = self.agent_model.model.predict_on_batch(data)
             buf = []
             k, i = 0, 0
-            for p, v in zip(policy_ary, value_ary):
-                buf.append((p, float(v)))
+            for p, v, e in zip(policy_ary, value_ary, event_ary):
+                buf.append((p, float(v), e))
                 k += 1
                 if k >= data_len[i]:
                     result_pipes[i].send(buf)

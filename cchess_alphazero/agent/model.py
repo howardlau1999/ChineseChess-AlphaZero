@@ -26,6 +26,7 @@ class CChessModel:
         self.model = None  # type: Model
         self.digest = None
         self.n_labels = len(ActionLabelsRed)
+        self.n_events = 7 * 9 * 10
         self.graph = None
         self.api = None
 
@@ -62,7 +63,15 @@ class CChessModel:
         x = Dense(mc.value_fc_size, kernel_regularizer=l2(mc.l2_reg), activation="relu", name="value_dense")(x)
         value_out = Dense(1, kernel_regularizer=l2(mc.l2_reg), activation="tanh", name="value_out")(x)
 
-        self.model = Model(in_x, [policy_out, value_out], name="cchess_model")
+        # for event output
+        x = Conv2D(filters=4, kernel_size=1, data_format="channels_first", use_bias=False, 
+                    kernel_regularizer=l2(mc.l2_reg), name="event_conv-1-2")(res_out)
+        x = BatchNormalization(axis=1, name="event_batchnorm")(x)
+        x = Activation("relu", name="event_relu")(x)
+        x = Flatten(name="event_flatten")(x)
+        event_out = Dense(self.n_events, kernel_regularizer=l2(mc.l2_reg), activation="softmax", name="event_out")(x)
+
+        self.model = Model(in_x, [policy_out, value_out, event_out], name="cchess_model")
         self.graph = tf.get_default_graph()
 
     def _build_residual_block(self, x, index):
